@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0edf4;
+    }
+
+    header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 15px 20px;
+      background: linear-gradient(to right, #6a1b9a, #8e24aa);
+      color: white;
+    }
+
+    header button {
+      padding: 8px 16px;
+      background-color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      color: #6a1b9a;
+    }
+
+    header button:hover {
+      background-color: #f3e5f5;
+    }
+
+    .content {
+      padding: 20px;
+      text-align: center;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <button id="logoutBtn">Logout</button>
+  </header>
+
+  <div class="content">
+    <h2>Settings Page</h2>
+    <p>This is a blank settings page. Add your settings here later.</p>
+  </div>
+
+  <script>
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+      // Clear session/localStorage if used for auth
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Redirect to login page
+      window.location.href = "login.html";
+    });
+  </script>
+
+</body>
+</html>

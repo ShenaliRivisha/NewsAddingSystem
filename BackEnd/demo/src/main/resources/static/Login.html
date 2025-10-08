@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Page</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0edf4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      width: 360px;
+      text-align: left;
+      background-color: #f0edf4;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #666;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 40px 12px 40px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .input-group svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      fill: #888;
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .options a {
+      text-decoration: none;
+      color: #9c27b0;
+      font-weight: bold;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #6a1b9a, #8e24aa);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #8e24aa, #ab47bc);
+    }
+
+    .language {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: red;
+    }
+  </style>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+  <div class="language">🌐 English ▼</div>
+
+  <div class="container">
+    <h2>Welcome</h2>
+    <p>Please sign in to your account</p>
+
+    <div class="input-group">
+      <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18"><path d="M120-160q-29 0-49.5-20.5T50-230v-500q0-29 20.5-49.5T120-800h720q29 0 49.5 20.5T910-730v500q0 29-20.5 49.5T840-160H120Zm360-280 360-220v-70L480-470 120-730v70l360 220Z"/></svg>
+      <input type="email" id="email" placeholder="jenny_w@evinta.com">
+    </div>
+
+    <div class="input-group">
+      <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18"><path d="M480-360q25 0 42.5-17.5T540-420q0-25-17.5-42.5T480-480q-25 0-42.5 17.5T420-420q0 25 17.5 42.5T480-360Zm-220 80h440v-300H260v300Zm80-380v-100q0-58 41-99t99-41q58 0 99 41t41 99v100h60v-100q0-83-58.5-141.5T480-900q-83 0-141.5 58.5T280-700v100h60Z"/></svg>
+      <input type="password" id="password" placeholder="********">
+    </div>
+
+    <div class="options">
+      <label><input type="checkbox"> Remember me</label>
+      <a href="#">Forgot password?</a>
+    </div>
+
+    <button id="loginBtn">Sign In</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $("#loginBtn").click(function () {
+        const email = $("#email").val();
+        const password = $("#password").val();
+
+        $.ajax({
+          url: "http://localhost:8080/api/users/login", // backend URL
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            email: email,
+            password: password
+          }),
+          success: function (response) {
+            $("#message").css("color", "green").text(response);
+
+            // Redirect after success
+            setTimeout(function () {
+              window.location.href = "blank.html"; 
+            }, 1000);
+          },
+          error: function (xhr) {
+            $("#message").css("color", "red").text(xhr.responseText || "Login failed!");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

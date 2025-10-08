@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background-color: #f5f5f5; display: flex;
+      height: 100vh; overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px; background: #6a1b9a; color: white;
+      height: 100vh; padding-top: 20px; position: fixed;
+      top: 0; left: 0; overflow-y: auto; transition: width 0.3s;
+      font-size: 18px;
+    }
+    .sidebar.collapsed { width: 80px; }
+    .toggle-btn { display: flex; justify-content: center; align-items: center; font-size: 26px; cursor: pointer; margin-bottom: 25px; color: white; }
+    .user-info { text-align: center; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); transition: opacity 0.3s; font-size: 18px; }
+    .sidebar.collapsed .user-info p, .sidebar.collapsed .menu-section h4, .sidebar.collapsed .logout-btn { display: none; }
+    .user-info p { margin: 0; font-size: 16px; color: #fff; font-weight: bold; }
+    .menu-section { margin-top: 25px; padding: 0 20px; }
+    .menu-section h4 { font-size: 15px; color: #bbb; margin-bottom: 10px; }
+    .menu-item { display: flex; align-items: center; padding: 14px; text-decoration: none; color: white; border-radius: 8px; transition: background 0.3s; cursor: pointer; font-size: 17px; }
+    .menu-item i { width: 30px; text-align: center; margin-right: 12px; font-size: 20px; }
+    .menu-item:hover { background: #8e24aa; }
+    .submenu { display: none; flex-direction: column; margin-left: 40px; }
+    .submenu a { padding: 10px 14px; border-radius: 6px; font-size: 16px; color: white; }
+    .submenu a:hover { background: #7b1fa2; }
+    .logout-btn { color: white; background: transparent; border: none; font-size: 17px; cursor: pointer; text-align: left; padding: 14px; width: 100%; display: flex; align-items: center; }
+    .logout-btn i { width: 30px; text-align: center; margin-right: 12px; font-size: 20px; }
+    .logout-btn:hover { background: #8e24aa; border-radius: 6px; }
+
+    /* Content wrapper */
+    .content-wrapper {
+      margin-left: 280px; flex: 1;
+      display: flex; flex-direction: column;
+      height: 100vh; transition: margin-left 0.3s;
+    }
+    .sidebar.collapsed ~ .content-wrapper { margin-left: 80px; }
+
+    /* Header */
+    .header {
+      background: #fff; padding: 20px 25px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #ddd;
+      font-size: 20px;
+      position: relative;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 30px; }
+
+    .nav-link {
+      text-decoration: none;
+      color: #6a1b9a;
+      font-weight: 500;
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .nav-link:hover { background: #8e24aa; color: white; }
+
+    #addNewsBtn {
+      padding: 14px 26px; background-color: #6a1b9a;
+      color: white; border: none; border-radius: 8px; cursor: pointer;
+      font-weight: bold; display: flex; align-items: center;
+      font-size: 18px;
+    }
+    #addNewsBtn i { margin-right: 10px; font-size: 20px; }
+    #addNewsBtn:hover { background-color: #8e24aa; }
+
+    /* Main content (scrollable) */
+    .content {
+      flex: 1; padding: 25px;
+      overflow-y: auto; font-size: 18px;
+    }
+
+    /* Footer */
+    .footer {
+      background: #fff; padding: 14px 25px;
+      text-align: center; font-size: 15px; color: #666;
+      border-top: 1px solid #ddd;
+    }
+
+    /* News Section */
+    .news-section {
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 25px;
+    }
+    .news-card {
+      background: white; border-radius: 10px;
+      box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
+      overflow: hidden; display: flex; flex-direction: column;
+      font-size: 16px;
+    }
+    .news-card img {
+      width: 100%; height: 200px; object-fit: cover;
+      background: #ddd;
+    }
+    .news-card .content-box { padding: 16px; }
+    .news-card h3 { margin: 0 0 10px 0; color: #6a1b9a; font-size: 20px; }
+    .news-card p { margin: 0 0 8px 0; font-size: 15px; color: #444; }
+    .news-card small { color: gray; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="toggle-btn" id="toggleBtn"><i class="fas fa-bars"></i></div>
+    <div class="user-info"><p id="displayEmail">user@email.com</p></div>
+
+    <div class="menu-section">
+      <h4>General</h4>
+      <a href="blank.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
+    </div>
+
+    <!-- Categories in Sidebar -->
+    <div class="menu-section">
+      <h4>News Categories</h4>
+      <div class="menu-item" id="sidebarCategoryToggle">
+        <i class="fas fa-newspaper"></i> Categories <i class="fas fa-caret-down" style="margin-left:auto"></i>
+      </div>
+      <div class="submenu" id="sidebarCategoryMenu">
+        <a href="local.html">Local</a>
+        <a href="#">World</a>
+        <a href="#">Entertainment</a>
+        <a href="#">Business</a>
+        <a href="#">Sports</a>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <h4>System</h4>
+      <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> Settings</a>
+      <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <h1 id="welcomeMessage">Welcome</h1>
+        <a href="blank.html" class="nav-link">Home</a>
+        <a href="local.html" class="nav-link">Local</a>
+        <a href="#" class="nav-link">World</a>
+        <a href="#" class="nav-link">Entertainment</a>
+        <a href="#" class="nav-link">Business</a>
+        <a href="#" class="nav-link">Sports</a>
+        <a href="#" class="nav-link">Obituaries</a>
+      </div>
+      <button id="addNewsBtn"><i class="fas fa-plus"></i> Add News</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <p>Latest 5 active news articles:</p>
+      <div class="news-section" id="newsSection"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      &copy; 2025 News Portal. All rights reserved.
+    </div>
+  </div>
+
+  <script>
+    const email = localStorage.getItem("email") || "guest@example.com";
+    document.getElementById("displayEmail").innerText = email;
+    document.getElementById("welcomeMessage").innerText = `Hello, ${email}!`;
+
+    function logout() {
+      localStorage.removeItem("email");
+      window.location.href = "login.html";
+    }
+
+    // Sidebar toggle
+    document.getElementById("toggleBtn").addEventListener("click", () => {
+      document.getElementById("sidebar").classList.toggle("collapsed");
+    });
+
+    // Add News Button
+    document.getElementById("addNewsBtn").addEventListener("click", () => {
+      window.location.href = "add-news.html";
+    });
+
+    // Sidebar Categories Toggle
+    const sidebarCategoryBtn = document.getElementById("sidebarCategoryToggle");
+    const sidebarCategoryMenu = document.getElementById("sidebarCategoryMenu");
+    sidebarCategoryBtn.addEventListener("click", () => {
+      sidebarCategoryMenu.style.display = sidebarCategoryMenu.style.display === "flex" ? "none" : "flex";
+      sidebarCategoryMenu.style.flexDirection = "column";
+    });
+
+    // Fetch Latest Active News
+    async function loadLatestNews() {
+      try {
+        const response = await fetch("http://localhost:8080/api/news/latest");
+        const newsList = await response.json();
+
+        const newsSection = document.getElementById("newsSection");
+        newsSection.innerHTML = "";
+
+        const activeNews = newsList.filter(n => n.status && n.status.toLowerCase() === "active");
+
+        if (activeNews.length === 0) {
+          newsSection.innerHTML = "<p>No active news available.</p>";
+          return;
+        }
+
+        activeNews.forEach(news => {
+          const card = document.createElement("div");
+          card.classList.add("news-card");
+          card.innerHTML = `
+            <img src="https://via.placeholder.com/260x200" alt="News Image">
+            <div class="content-box">
+              <h3>${news.title}</h3>
+              <p>${news.content.substring(0, 120)}...</p>
+              <small><b>Category:</b> ${news.category} | <b>Author:</b> ${news.author}</small>
+            </div>
+          `;
+          newsSection.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Error loading news:", error);
+      }
+    }
+
+    loadLatestNews();
+  </script>
+</body>
+</html>
